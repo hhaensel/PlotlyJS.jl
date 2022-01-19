@@ -1,7 +1,7 @@
 # ----------------------------------------- #
 # SyncPlot -- sync Plot object with display #
 # ----------------------------------------- #
-mutable struct SyncPlot
+mutable struct SyncPlot <: AbstractPlot
     plot::PlotlyBase.Plot
     scope::Scope
     window::Union{Nothing,Blink.Window}

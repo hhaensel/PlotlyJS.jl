@@ -14,6 +14,7 @@ import PlotlyBase:
     extendtraces, prependtraces, prep_kwargs, sizes, _tovec,
     react, react!, add_trace!
 
+using PlotlySave
 using WebIO
 using JSExpr
 using JSExpr: @var, @new
@@ -35,7 +36,7 @@ struct PlotlyJSDisplay <: AbstractDisplay end
 # include the rest of the core parts of the package
 include("display.jl")
 include("util.jl")
-include("kaleido.jl")
+@inline _get_Plot(p::SyncPlot) = p.plot
 
 make_subplots(;kwargs...) = plot(Layout(Subplots(;kwargs...)))
 
@@ -95,7 +96,7 @@ function __init__()
         @warn("Warnings were generated during the last build of PlotlyJS:  please check the build log at $_build_log")
     end
 
-    @async _start_kaleido_process()
+    @async PlotlySave._start_kaleido_process()
 
     if !isfile(_js_path)
         @info("plotly.js javascript libary not found -- downloading now")
