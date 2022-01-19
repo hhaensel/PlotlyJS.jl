@@ -20,7 +20,7 @@ function Base.show(io::IO, mm::MIME"text/html", p::SyncPlot)
     end
     show(io, mm, p.scope)
 end
-Base.show(io::IO, mm::MIME"application/prs.juno.plotpane+html", p::SyncPlot) = show(io, mm, p.scope)
+# Base.show(io::IO, mm::MIME"application/prs.juno.plotpane+html", p::SyncPlot) = show(io, mm, p.scope)
 
 function SyncPlot(
         p::Plot;
@@ -343,9 +343,10 @@ for f in (:extendtraces!, :prependtraces!)
     end
 end
 
-
+# shouldn't it be with @eval and $mime?
+#
 for mime in ["text/plain", "application/vnd.plotly.v1+json", "application/prs.juno.plotpane+html"]
-    @eval function Base.show(io::IO, m::MIME{Symbol($mime)}, p::AbstractPlot, args...; kwargs...)
-        show(io, m, _get_Plot(p), args...; kwargs...)
+    function Base.show(io::IO, m::MIME{Symbol(mime)}, p::SyncPlot, args...)
+        show(io, m, Plot(p), args...)
     end
 end

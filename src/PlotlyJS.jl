@@ -36,8 +36,7 @@ struct PlotlyJSDisplay <: AbstractDisplay end
 # include the rest of the core parts of the package
 include("display.jl")
 include("util.jl")
-import PlotlySave._get_Plot
-@inline _get_Plot(p::SyncPlot) = p.plot
+@inline Plot(p::SyncPlot) = p.plot
 
 make_subplots(;kwargs...) = plot(Layout(Subplots(;kwargs...)))
 
