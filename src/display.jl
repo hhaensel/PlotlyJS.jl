@@ -20,6 +20,10 @@ function Base.show(io::IO, mm::MIME"text/html", p::SyncPlot)
     end
     show(io, mm, p.scope)
 end
+
+# the function referenced below doesn't exist in WebIO
+# the MIME is covered by the definition at the end of the file
+# hence commented out here
 # Base.show(io::IO, mm::MIME"application/prs.juno.plotpane+html", p::SyncPlot) = show(io, mm, p.scope)
 
 function SyncPlot(
@@ -309,42 +313,7 @@ function prependtraces!(plt::SyncPlot, update::AbstractDict,
     )
 end
 
-for f in [:restyle, :relayout, :update, :addtraces, :deletetraces,
-          :movetraces, :redraw, :extendtraces, :prependtraces, :purge, :react]
-    f! = Symbol(f, "!")
-    @eval function $(f)(plt::SyncPlot, args...; kwargs...)
-        out = SyncPlot(deepcopy(plt.plot))
-        $(f!)(out, args...; kwargs...)
-        out
-    end
-end
 
-# add extra same extra methods we have on ::Plot for these functions
-for f in (:extendtraces!, :prependtraces!)
-    @eval begin
-        function $(f)(p::SyncPlot, inds::Vector{Int}=[0],
-                      maxpoints=-1; update...)
-            d = Dict()
-            for (k, v) in update
-                d[k] = _tovec(v)
-            end
-            ($f)(p, d, inds, maxpoints)
-        end
-
-        function $(f)(p::SyncPlot, ind::Int, maxpoints=-1;
-                      update...)
-            ($f)(p, [ind], maxpoints; update...)
-        end
-
-        function $(f)(p::SyncPlot, update::AbstractDict, ind::Int,
-                      maxpoints=-1)
-            ($f)(p, update, [ind], maxpoints)
-        end
-    end
-end
-
-# shouldn't it be with @eval and $mime?
-#
 for mime in ["text/plain", "application/vnd.plotly.v1+json", "application/prs.juno.plotpane+html"]
     function Base.show(io::IO, m::MIME{Symbol(mime)}, p::SyncPlot, args...)
         show(io, m, Plot(p), args...)
