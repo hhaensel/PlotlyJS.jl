@@ -6,7 +6,7 @@ end
 
 @testset "kaleido" begin
     for func in [Plot, plot]
-        for ext in [PlotlyJS.ALL_FORMATS..., "html"]
+        for ext in [PlotlyJS.PlotlySave.ALL_FORMATS..., "html"]
             if ext === "eps"
                 continue
             end

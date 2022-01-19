@@ -345,9 +345,7 @@ end
 
 
 for mime in ["text/plain", "application/vnd.plotly.v1+json", "application/prs.juno.plotpane+html"]
-    function Base.show(io::IO, m::MIME{Symbol(mime)}, p::SyncPlot, args...)
-        show(io, m, p.plot, args...)
+    @eval function Base.show(io::IO, m::MIME{Symbol($mime)}, p::AbstractPlot, args...; kwargs...)
+        show(io, m, _get_Plot(p), args...; kwargs...)
     end
 end
-
-PlotlyBase.savejson(sp::SyncPlot, fn::String) = PlotlyBase.savejson(sp.plot, fn)
